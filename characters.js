@@ -119,18 +119,18 @@ class Pacman {
     updateVelocity() {
         if (this.direction == 'U') {
             this.velocityX = 0;
-            this.velocityY = -tileSize/4;
+            this.velocityY = -tileSize/6;
         }
         else if (this.direction == 'D') {
             this.velocityX = 0;
-            this.velocityY = tileSize/4;
+            this.velocityY = tileSize/6;
         }
         else if (this.direction == 'L') {
-            this.velocityX = -tileSize/4;
+            this.velocityX = -tileSize/6;
             this.velocityY = 0;
         }
         else if (this.direction == 'R') {
-            this.velocityX = tileSize/4;
+            this.velocityX = tileSize/6;
             this.velocityY = 0;
         }
         else if (this.direction !== 'U' && 'D' && 'L' && 'R'){
