@@ -302,13 +302,6 @@ function moveOneTile(direction) {
         targetX += tileSize;
     }
 
-    // Handle horizontal wrapping
-    if (targetX < 0) {
-        targetX = boardWidth - tileSize;
-    } else if (targetX >= boardWidth) {
-        targetX = 0;
-    }
-
     // Check if target position is a wall
     let canMove = true;
     for (let wall of walls.values()) {
