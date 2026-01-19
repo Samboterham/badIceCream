@@ -202,14 +202,6 @@ function move() {
     pacman.x += pacman.velocityX;
     pacman.y += pacman.velocityY;
 
-    if (pacman.x >600) {
-    pacman.x = -50;
-}
-
-    if (pacman.x < -50) {
-    pacman.x = 600;
-}
-
     //check wall collisions
     for (let wall of walls.values()) {
         if (collision(pacman, wall)) {
