@@ -8,11 +8,12 @@ let pacmanAnimToggle = false;
 let board;
 const rowCount = 21;
 const columnCount = 19;
-const tileSize = 24;
-const boardWidth = columnCount*tileSize;
-const boardHeight = rowCount*tileSize;
-let context;
+const tileSize = 32;
+const boardWidth = columnCount * tileSize;
+const boardHeight = rowCount * tileSize;const offsetX = (1505 - boardWidth) / 2;  // center horizontally
+const offsetY = (694 - boardHeight) / 2;  // center verticallylet context;
 
+let backgroundImage;
 let blueGhostImage;
 let orangeGhostImage;
 let pinkGhostImage;
@@ -23,30 +24,33 @@ let pacmanLeftImage;
 let pacmanRightImage;
 let wallImage;
 
+let width = 1505;
+let height = 694;
+
 //X = wall, O = skip, P = pac man, ' ' = food
 //Ghosts: b = blue, o = orange, p = pink, r = red
 const tileMap = [
     "XXXXXXXXXXXXXXXXXXX",
-    "X        X        X",
-    "X XX XXX X XXX XX X",
     "X                 X",
-    "X XX X XXXXX X XX X",
-    "X    X       X    X",
-    "XXXX XXXX XXXX XXXX",
-    "OOOX X       X XOOO",
-    "XXXX X XXrXX X XXXX",
-    "O       bpo       O",
-    "XXXX X XXXXX X XXXX",
-    "OOOX X       X XOOO",
-    "XXXX X XXXXX X XXXX",
-    "X        X        X",
-    "X XX XXX X XXX XX X",
-    "X  X     P     X  X",
-    "XX X X XXXXX X X XX",
-    "X    X   X   X    X",
-    "X XXXXXX X XXXXXX X",
     "X                 X",
-    "XXXXXXXXXXXXXXXXXXX" 
+    "X                 X",
+    "X                 X",
+    "X   XX       XX   X",
+    "X   X         X   X",
+    "X   X         X   X",
+    "X   X         X   X",
+    "X   X         X   X",
+    "X   X    P    X   X",
+    "X   X         X   X",
+    "X   X         X   X",
+    "X   XX       XX   X",
+    "X                 X",
+    "X                 X",
+    "X                 X",
+    "X                 X",
+    "X                 X",
+    "X                 X",
+    "XXXXXXXXXXXXXXXXXXX"
 ];
 
 const walls = new Set();
@@ -60,61 +64,85 @@ let lives = 3;
 let gameOver = false;
 let pressedKeys = new Set();
 let pressedDirections = [];
+let keyTimers = new Map();
+let keyIntervals = new Map();
 
-window.onload = function() {
+let imagesLoaded = 0;
+const totalImages = 11; // background, wall, 4 ghosts, 4 pacman, 1 anim
+
+window.onload = function () {
     board = document.getElementById("board");
-    board.height = boardHeight;
-    board.width = boardWidth;
+    board.height = height;
+    board.width = width;
     context = board.getContext("2d"); //used for drawing on the board
 
     loadImages();
-    loadMap();
-    // console.log(walls.size)
-    // console.log(foods.size)
-    // console.log(ghosts.size)
-    for (let ghost of ghosts.values()) {
-        const newDirection = directions[Math.floor(Math.random()*4)];
-        ghost.updateDirection(newDirection);
-    }
-    update();
-    document.addEventListener("keydown", movePacman);
-    document.addEventListener("keyup", stopPacman);
-    backgroundMusic = new Audio("./background.mp3");
-    backgroundMusic.loop = true;
-    backgroundMusic.volume = 0.5; // pas aan indien nodig
-    
-    setInterval(() => {
-    if (gameOver || !pacman) return;
-
-    pacmanAnimToggle = !pacmanAnimToggle;
-    pacman.image = pacmanAnimToggle ? pacmanAnimImage : pacmanNormalImage;
-}, 175);
 }
 
 function loadImages() {
+    backgroundImage = new Image();
+    backgroundImage.src = "./background.png";
+    backgroundImage.onload = imageLoaded;
+
     wallImage = new Image();
     wallImage.src = "./wall.png";
+    wallImage.onload = imageLoaded;
 
     blueGhostImage = new Image();
     blueGhostImage.src = "./blueGhost.png";
+    blueGhostImage.onload = imageLoaded;
     orangeGhostImage = new Image();
-    orangeGhostImage.src = "./orangeGhost.png"
-    pinkGhostImage = new Image()
+    orangeGhostImage.src = "./orangeGhost.png";
+    orangeGhostImage.onload = imageLoaded;
+    pinkGhostImage = new Image();
     pinkGhostImage.src = "./pinkGhost.png";
-    redGhostImage = new Image()
+    pinkGhostImage.onload = imageLoaded;
+    redGhostImage = new Image();
     redGhostImage.src = "./redGhost.png";
+    redGhostImage.onload = imageLoaded;
 
     pacmanUpImage = new Image();
     pacmanUpImage.src = "./chocolateup.png";
+    pacmanUpImage.onload = imageLoaded;
     pacmanDownImage = new Image();
     pacmanDownImage.src = "./chocolatedown.png";
+    pacmanDownImage.onload = imageLoaded;
     pacmanLeftImage = new Image();
     pacmanLeftImage.src = "./chocolateleft.png";
+    pacmanLeftImage.onload = imageLoaded;
     pacmanRightImage = new Image();
     pacmanRightImage.src = "./chocolateright.png";
+    pacmanRightImage.onload = imageLoaded;
     pacmanAnimImage = new Image();
     pacmanAnimImage.src = "./pacman.png";
-    
+    pacmanAnimImage.onload = imageLoaded;
+}
+
+function imageLoaded() {
+    imagesLoaded++;
+    if (imagesLoaded === totalImages) {
+        loadMap();
+        // console.log(walls.size)
+        // console.log(foods.size)
+        // console.log(ghosts.size)
+        for (let ghost of ghosts.values()) {
+            const newDirection = directions[Math.floor(Math.random() * 4)];
+            ghost.updateDirection(newDirection);
+        }
+        update();
+        document.addEventListener("keydown", movePacman);
+        document.addEventListener("keyup", stopPacman);
+        backgroundMusic = new Audio("./background.mp3");
+        backgroundMusic.loop = true;
+        backgroundMusic.volume = 0.5; // pas aan indien nodig
+
+        setInterval(() => {
+            if (gameOver || !pacman) return;
+
+            pacmanAnimToggle = !pacmanAnimToggle;
+            pacman.image = pacmanAnimToggle ? pacmanAnimImage : pacmanNormalImage;
+        }, 175);
+    }
 }
 
 function loadMap() {
@@ -127,12 +155,13 @@ function loadMap() {
             const row = tileMap[r];
             const tileMapChar = row[c];
 
-            const x = c*tileSize;
-            const y = r*tileSize;
+
+            const x = c * tileSize + offsetX;
+            const y = r * tileSize + offsetY;
 
             if (tileMapChar == 'X') { //block wall
                 const wall = new Block(wallImage, x, y, tileSize, tileSize);
-                walls.add(wall);  
+                walls.add(wall);
             }
             else if (tileMapChar == 'b') { //blue ghost
                 const ghost = new Block(blueGhostImage, x, y, tileSize, tileSize);
@@ -155,7 +184,7 @@ function loadMap() {
                 pacmanNormalImage = pacmanRightImage;
             }
             else if (tileMapChar == ' ') { //empty is food
-                const food = new Block(null, x + tileSize/2 - 2, y + tileSize/2 - 2, 4, 4);
+                const food = new Block(null, x + tileSize / 2 - 2, y + tileSize / 2 - 2, 4, 4);
                 foods.add(food);
             }
         }
@@ -165,7 +194,7 @@ function loadMap() {
 function update() {
     if (gameOver) {
         return;
-    }   
+    }
     move();
     draw();
     setTimeout(update, 50); //1000/50 = 20 FPS
@@ -173,11 +202,12 @@ function update() {
 
 function draw() {
     context.clearRect(0, 0, board.width, board.height);
+    context.drawImage(backgroundImage, 0, 0, board.width, board.height);
     context.drawImage(pacman.image, pacman.x, pacman.y, pacman.width, pacman.height);
     for (let ghost of ghosts.values()) {
         context.drawImage(ghost.image, ghost.x, ghost.y, ghost.width, ghost.height);
     }
-    
+
     for (let wall of walls.values()) {
         context.drawImage(wall.image, wall.x, wall.y, wall.width, wall.height);
     }
@@ -189,12 +219,12 @@ function draw() {
 
     //score
     context.fillStyle = "white";
-    context.font="14px sans-serif";
+    context.font = "14px sans-serif";
     if (gameOver) {
-        context.fillText("Game Over: " + String(score), tileSize/2, tileSize/2);
+        context.fillText("Game Over: " + String(score), tileSize / 2, tileSize / 2);
     }
     else {
-        context.fillText("x" + String(lives) + " " + String(score), tileSize/2, tileSize/2);
+        context.fillText("x" + String(lives) + " " + String(score), tileSize / 2, tileSize / 2);
     }
 }
 
@@ -202,15 +232,8 @@ function move() {
     pacman.x += pacman.velocityX;
     pacman.y += pacman.velocityY;
 
-    if (pacman.x >600) {
-    pacman.x = -50;
-}
 
-    if (pacman.x < -50) {
-    pacman.x = 600;
-}
-
-    //check wall collisions
+    //check wall collisions for pacman
     for (let wall of walls.values()) {
         if (collision(pacman, wall)) {
             pacman.x -= pacman.velocityX;
@@ -230,7 +253,7 @@ function move() {
             resetPositions();
         }
 
-        if (ghost.y == tileSize*9 && ghost.direction != 'U' && ghost.direction != 'D') {
+        if (ghost.y == tileSize * 9 && ghost.direction != 'U' && ghost.direction != 'D') {
             ghost.updateDirection('U');
         }
 
@@ -240,7 +263,7 @@ function move() {
             if (collision(ghost, wall) || ghost.x <= 0 || ghost.x + ghost.width >= boardWidth) {
                 ghost.x -= ghost.velocityX;
                 ghost.y -= ghost.velocityY;
-                const newDirection = directions[Math.floor(Math.random()*4)];
+                const newDirection = directions[Math.floor(Math.random() * 4)];
                 ghost.updateDirection(newDirection);
             }
         }
@@ -262,7 +285,58 @@ function move() {
         loadMap();
         resetPositions();
     }
-    
+
+}
+
+function moveOneTile(direction) {
+    // Calculate target position one tile away
+    let targetX = pacman.x;
+    let targetY = pacman.y;
+    if (direction == 'U') {
+        targetY -= tileSize;
+    } else if (direction == 'D') {
+        targetY += tileSize;
+    } else if (direction == 'L') {
+        targetX -= tileSize;
+    } else if (direction == 'R') {
+        targetX += tileSize;
+    }
+
+    // Handle horizontal wrapping
+    if (targetX < 0) {
+        targetX = boardWidth - tileSize;
+    } else if (targetX >= boardWidth) {
+        targetX = 0;
+    }
+
+    // Check if target position is a wall
+    let canMove = true;
+    for (let wall of walls.values()) {
+        if (targetX === wall.x && targetY === wall.y) {
+            canMove = false;
+            break;
+        }
+    }
+
+    if (canMove) {
+        pacman.x = targetX;
+        pacman.y = targetY;
+        pacman.direction = direction;
+    }
+
+    //update pacman images
+    if (pacman.direction == 'U') {
+        pacmanNormalImage = pacmanUpImage;
+    }
+    else if (pacman.direction == 'D') {
+        pacmanNormalImage = pacmanDownImage;
+    }
+    else if (pacman.direction == 'L') {
+        pacmanNormalImage = pacmanLeftImage;
+    }
+    else if (pacman.direction == 'R') {
+        pacmanNormalImage = pacmanRightImage;
+    }
 }
 
 function movePacman(e) {
@@ -270,8 +344,8 @@ function movePacman(e) {
     pressedKeys.add(e.code);
 
     if (backgroundMusic.paused) {
-    backgroundMusic.play();
-}
+        backgroundMusic.play();
+    }
 
     if (gameOver) {
         loadMap();
@@ -297,28 +371,22 @@ function movePacman(e) {
         newDirection = 'R';
     }
 
-    if (newDirection && !pressedDirections.includes(newDirection)) {
-        pressedDirections.push(newDirection);
-        pacman.updateDirection(newDirection);
-    }
-
-    //update pacman images
-    if (pacman.direction == 'U') {
-        pacmanNormalImage = pacmanUpImage;
-    }
-    else if (pacman.direction == 'D') {
-        pacmanNormalImage = pacmanDownImage;
-    }
-    else if (pacman.direction == 'L') {
-        pacmanNormalImage = pacmanLeftImage;
-    }
-    else if (pacman.direction == 'R') {
-        pacmanNormalImage = pacmanRightImage;
+    if (newDirection) {
+        // Move immediately on key press
+        moveOneTile(newDirection);
+        // Start continuous tile movement if key is held
+        keyIntervals.set(e.code, setInterval(() => moveOneTile(newDirection), 300));
     }
 }
 
 function stopPacman(e) {
     pressedKeys.delete(e.code);
+
+    // Clear the interval for this key
+    if (keyIntervals.has(e.code)) {
+        clearInterval(keyIntervals.get(e.code));
+        keyIntervals.delete(e.code);
+    }
 
     let directionToRemove = null;
     if (e.code == "ArrowUp" || e.code == "KeyW") {
@@ -354,9 +422,9 @@ function stopPacman(e) {
 
 function collision(a, b) {
     return a.x < b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
-           a.x + a.width > b.x &&   //a's top right corner passes b's top left corner
-           a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
-           a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
+        a.x + a.width > b.x &&   //a's top right corner passes b's top left corner
+        a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
+        a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
 }
 
 function resetPositions() {
@@ -365,7 +433,7 @@ function resetPositions() {
     pacman.velocityY = 0;
     for (let ghost of ghosts.values()) {
         ghost.reset();
-        const newDirection = directions[Math.floor(Math.random()*4)];
+        const newDirection = directions[Math.floor(Math.random() * 4)];
         ghost.updateDirection(newDirection);
     }
 }
@@ -387,38 +455,25 @@ class Block {
     }
 
     updateDirection(direction) {
-        const prevDirection = this.direction;
         this.direction = direction;
         this.updateVelocity();
-        this.x += this.velocityX;
-        this.y += this.velocityY;
-        
-        for (let wall of walls.values()) {
-            if (collision(this, wall)) {
-                this.x -= this.velocityX;
-                this.y -= this.velocityY;
-                this.direction = prevDirection;
-                this.updateVelocity();
-                return;
-            }
-        }
     }
 
     updateVelocity() {
         if (this.direction == 'U') {
             this.velocityX = 0;
-            this.velocityY = -tileSize/6;
+            this.velocityY = -tileSize / 6;
         }
         else if (this.direction == 'D') {
             this.velocityX = 0;
-            this.velocityY = tileSize/6;
+            this.velocityY = tileSize / 6;
         }
         else if (this.direction == 'L') {
-            this.velocityX = -tileSize/6;
+            this.velocityX = -tileSize / 6;
             this.velocityY = 0;
         }
         else if (this.direction == 'R') {
-            this.velocityX = tileSize/6;
+            this.velocityX = tileSize / 6;
             this.velocityY = 0;
         }
     }

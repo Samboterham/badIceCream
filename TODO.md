@@ -1,0 +1,6 @@
+- [x] Modify movePacman function to move Pac-Man one tile at a time on key press
+- [x] Remove continuous movement for Pac-Man in the move function
+- [x] Ensure collision detection prevents moving into walls
+- [x] Handle screen wrapping for horizontal movement
+- [x] Update Pac-Man image based on direction
+- [x] Test the changes to ensure tile-based movement works correctly
