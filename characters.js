@@ -31,25 +31,25 @@ let height = 694;
 //Ghosts: b = blue, o = orange, p = pink, r = red
 const tileMap = [
     "XXXXXXXXXXXXXXXXXXX",
+    "Xr                X",
     "X                 X",
     "X                 X",
     "X                 X",
-    "X                 X",
-    "X   XX   po  XX   X",
-    "X   X    br   X   X",
-    "X   X         X   X",
-    "X   X         X   X",
+    "X   XX       XX   X",
+    "X   Xo........X   X",
+    "X   X.........X   X",
+    "X   X.........X   X",
     "X   X         X   X",
     "X   X    P    X   X",
     "X   X         X   X",
-    "X   X         X   X",
+    "X   X        pX   X",
     "X   XX       XX   X",
     "X                 X",
     "X                 X",
     "X                 X",
     "X                 X",
     "X                 X",
-    "X                 X",
+    "X                bX",
     "XXXXXXXXXXXXXXXXXXX"
 ];
 
@@ -260,7 +260,7 @@ function move() {
         ghost.x += ghost.velocityX;
         ghost.y += ghost.velocityY;
         for (let wall of walls.values()) {
-            if (collision(ghost, wall) || ghost.x <= 0 || ghost.x + ghost.width >= boardWidth) {
+            if (collision(ghost, wall) || ghost.x <= offsetX || ghost.x + ghost.width >= offsetX + boardWidth) {
                 ghost.x -= ghost.velocityX;
                 ghost.y -= ghost.velocityY;
                 const newDirection = directions[Math.floor(Math.random() * 4)];
