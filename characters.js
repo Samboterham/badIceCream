@@ -188,7 +188,7 @@ function loadMap() {
             const y = r * tileSize + offsetY;
 
             if (tileMapChar == 'X') { //block wall
-                const wall = new Block(wallImage, x, y, 25, 25);
+                const wall = new Block(wallImage, x, y, 25, 30);
                 walls.add(wall);
             }
             else if (tileMapChar == 'b') { //blue ghost
