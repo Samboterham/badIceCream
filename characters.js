@@ -1,7 +1,10 @@
 //board
 let backgroundMusic;
 
-let pacmanAnimImage;
+let chocolateupanim;
+let chocolateleftanim;
+let chocolatedrightanim;
+let chocolatedownanim;
 let pacmanNormalImage;
 let pacmanAnimToggle = false;
 
@@ -113,9 +116,18 @@ function loadImages() {
     pacmanRightImage = new Image();
     pacmanRightImage.src = "./chocolateright.png";
     pacmanRightImage.onload = imageLoaded;
-    pacmanAnimImage = new Image();
-    pacmanAnimImage.src = "./pacman.png";
-    pacmanAnimImage.onload = imageLoaded;
+    chocolateupanim = new Image();
+    chocolateupanim.src = "./chocolateupanim.png";
+    chocolateupanim.onload = imageLoaded;
+    chocolatedownanim = new Image();
+    chocolatedownanim.src = "./chocolatedownanim.png";
+    chocolatedownanim.onload = imageLoaded;
+    chocolateleftanim = new Image();
+    chocolateleftanim.src = "./chocolateleftanim.png";
+    chocolateleftanim.onload = imageLoaded;
+    chocolaterightanim = new Image();
+    chocolaterightanim.src = "./chocolaterightanim.png";
+    chocolaterightanim.onload = imageLoaded;
 }
 
 function imageLoaded() {
@@ -138,12 +150,28 @@ function imageLoaded() {
 
         setInterval(() => {
             if (gameOver || !pacman) return;
-
+            
+            if (pacman.direction == 'U'){
             pacmanAnimToggle = !pacmanAnimToggle;
-            pacman.image = pacmanAnimToggle ? pacmanAnimImage : pacmanNormalImage;
+            pacman.image = pacmanAnimToggle ? chocolateupanim : pacmanNormalImage;
+            }
+            if (pacman.direction == 'D'){
+            pacmanAnimToggle = !pacmanAnimToggle;
+            pacman.image = pacmanAnimToggle ? chocolatedownanim : pacmanNormalImage;
+            }
+            if (pacman.direction == 'L'){
+            pacmanAnimToggle = !pacmanAnimToggle;
+            pacman.image = pacmanAnimToggle ? chocolateleftanim : pacmanNormalImage;
+            }
+            if (pacman.direction == 'R'){
+            pacmanAnimToggle = !pacmanAnimToggle;
+            pacman.image = pacmanAnimToggle ? chocolaterightanim : pacmanNormalImage;
+            }
+
         }, 175);
     }
 }
+
 
 function loadMap() {
     walls.clear();
