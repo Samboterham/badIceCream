@@ -188,7 +188,7 @@ function loadMap() {
             const y = r * tileSize + offsetY;
 
             if (tileMapChar == 'X') { //block wall
-                const wall = new Block(wallImage, x, y, 35, 45);
+                const wall = new Block(wallImage, x, y, 25, 25);
                 walls.add(wall);
             }
             else if (tileMapChar == 'b') { //blue ghost
@@ -231,10 +231,6 @@ function update() {
 function draw() {
     context.clearRect(0, 0, board.width, board.height);
     context.drawImage(backgroundImage, 0, 0, board.width, board.height);
-    context.drawImage(pacman.image, pacman.x, pacman.y, pacman.width, pacman.height);
-    for (let ghost of ghosts.values()) {
-        context.drawImage(ghost.image, ghost.x, ghost.y, ghost.width, ghost.height);
-    }
 
     for (let wall of walls.values()) {
         context.drawImage(wall.image, wall.x, wall.y, 35, 45);
@@ -243,6 +239,10 @@ function draw() {
     context.fillStyle = "white";
     for (let food of foods.values()) {
         context.fillRect(food.x, food.y, food.width, food.height);
+    }
+
+    for (let ghost of ghosts.values()) {
+        context.drawImage(ghost.image, ghost.x, ghost.y, ghost.width, ghost.height);
     }
 
     //score
@@ -254,6 +254,7 @@ function draw() {
     else {
         context.fillText("x" + String(lives) + " " + String(score), tileSize / 2, tileSize / 2);
     }
+    context.drawImage(pacman.image, pacman.x, pacman.y, pacman.width, pacman.height);
 }
 
 function move() {
@@ -332,8 +333,9 @@ function moveOneTile(direction) {
 
     // Check if target position is a wall
     let canMove = true;
+    const targetBlock = { x: targetX, y: targetY, width: tileSize, height: tileSize };
     for (let wall of walls.values()) {
-        if (targetX === wall.x && targetY === wall.y) {
+        if (collision(targetBlock, wall)) {
             canMove = false;
             break;
         }
@@ -445,17 +447,40 @@ function stopPacman(e) {
     }
 
     //iceblock
+    //rechts
     if (pacman.direction === 'R' && e.code === "Space") {
 
         console.log('iceblock');
 
-        const img = document.createElement("img");
-        img.src = "iceblock.png";
-        img.style.position = "absolute";
-        img.style.left = (pacman.x + 10) + "px";
-        img.style.top = pacman.y + "px";
+        const wall = new Block(wallImage, pacman.x + 32, pacman.y, 25, 30);
+        walls.add(wall);
+    }
 
-        document.body.appendChild(img);
+        //links
+    if (pacman.direction === 'L' && e.code === "Space") {
+
+        console.log('iceblock');
+
+        const wall = new Block(wallImage, pacman.x - 32, pacman.y, 25, 30);
+        walls.add(wall);
+    }
+        
+        //boven
+    if (pacman.direction === 'U' && e.code === "Space") {
+
+        console.log('iceblock');
+
+        const wall = new Block(wallImage, pacman.x, pacman.y - 32, 25, 30);
+        walls.add(wall);
+    }
+
+        //beneden
+    if (pacman.direction === 'D' && e.code === "Space") {
+
+        console.log('iceblock');
+
+        const wall = new Block(wallImage, pacman.x, pacman.y + 32, 25, 30);
+        walls.add(wall);
     }
 }
 
