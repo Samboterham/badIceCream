@@ -34,25 +34,25 @@ let height = 694;
 //Ghosts: b = blue, o = orange, p = pink, r = red
 const tileMap = [
     "XXXXXXXXXXXXXXXXXXX",
-    "Xr                X",
+    "X                 X",
+    "X r               X",
     "X                 X",
     "X                 X",
-    "X                 X",
-    "X   XX       XX   X",
-    "X   Xo........X   X",
+    "X   XXX     XXX   X",
+    "X   X.........X   X",
+    "X   X.o.......X   X",
     "X   X.........X   X",
     "X   X.........X   X",
-    "X   X         X   X",
-    "X   X    P    X   X",
-    "X   X         X   X",
-    "X   X        pX   X",
-    "X   XX       XX   X",
+    "X   X....P....X   X",
+    "X   X.......p.X   X",
+    "X   X.........X   X",
+    "X   XXX     XXX   X",
     "X                 X",
     "X                 X",
     "X                 X",
     "X                 X",
+    "X               b X",
     "X                 X",
-    "X                bX",
     "XXXXXXXXXXXXXXXXXXX"
 ];
 
@@ -88,7 +88,7 @@ function loadImages() {
     backgroundImage.onload = imageLoaded;
 
     wallImage = new Image();
-    wallImage.src = "./wall.png";
+    wallImage.src = "./iceblock.png";
     wallImage.onload = imageLoaded;
 
     blueGhostImage = new Image();
@@ -134,7 +134,7 @@ function imageLoaded() {
     imagesLoaded++;
     if (imagesLoaded === totalImages) {
         loadMap();
-        // console.log(walls.size)
+        console.log(walls.size)
         // console.log(foods.size)
         // console.log(ghosts.size)
         for (let ghost of ghosts.values()) {
@@ -147,6 +147,7 @@ function imageLoaded() {
         backgroundMusic = new Audio("./background.mp3");
         backgroundMusic.loop = true;
         backgroundMusic.volume = 0.5; // pas aan indien nodig
+        
 
         setInterval(() => {
             if (gameOver || !pacman) return;
@@ -167,7 +168,6 @@ function imageLoaded() {
             pacmanAnimToggle = !pacmanAnimToggle;
             pacman.image = pacmanAnimToggle ? chocolaterightanim : pacmanNormalImage;
             }
-
         }, 175);
     }
 }
@@ -188,7 +188,7 @@ function loadMap() {
             const y = r * tileSize + offsetY;
 
             if (tileMapChar == 'X') { //block wall
-                const wall = new Block(wallImage, x, y, tileSize, tileSize);
+                const wall = new Block(wallImage, x, y, 35, 45);
                 walls.add(wall);
             }
             else if (tileMapChar == 'b') { //blue ghost
@@ -237,7 +237,7 @@ function draw() {
     }
 
     for (let wall of walls.values()) {
-        context.drawImage(wall.image, wall.x, wall.y, wall.width, wall.height);
+        context.drawImage(wall.image, wall.x, wall.y, 35, 45);
     }
 
     context.fillStyle = "white";
@@ -360,6 +360,10 @@ function moveOneTile(direction) {
     }
 }
 
+
+
+
+
 function movePacman(e) {
     if (pressedKeys.has(e.code)) return;
     pressedKeys.add(e.code);
@@ -438,6 +442,20 @@ function stopPacman(e) {
         // Continue with the last pressed direction
         const lastDirection = pressedDirections[pressedDirections.length - 1];
         pacman.updateDirection(lastDirection);
+    }
+
+    //iceblock
+    if (pacman.direction === 'R' && e.code === "Space") {
+
+        console.log('iceblock');
+
+        const img = document.createElement("img");
+        img.src = "iceblock.png";
+        img.style.position = "absolute";
+        img.style.left = (pacman.x + 10) + "px";
+        img.style.top = pacman.y + "px";
+
+        document.body.appendChild(img);
     }
 }
 
