@@ -34,25 +34,25 @@ let height = 694;
 //Ghosts: b = blue, o = orange, p = pink, r = red
 const tileMap = [
     "XXXXXXXXXXXXXXXXXXX",
-    "Xr                X",
+    "X                 X",
+    "X r               X",
     "X                 X",
     "X                 X",
-    "X                 X",
-    "X   XX       XX   X",
-    "X   Xo........X   X",
+    "X   XXX     XXX   X",
+    "X   X.........X   X",
+    "X   X.o.......X   X",
     "X   X.........X   X",
     "X   X.........X   X",
-    "X   X         X   X",
-    "X   X    P    X   X",
-    "X   X         X   X",
-    "X   X        pX   X",
-    "X   XX       XX   X",
+    "X   X....P....X   X",
+    "X   X.......p.X   X",
+    "X   X.........X   X",
+    "X   XXX     XXX   X",
     "X                 X",
     "X                 X",
     "X                 X",
     "X                 X",
+    "X               b X",
     "X                 X",
-    "X                bX",
     "XXXXXXXXXXXXXXXXXXX"
 ];
 
@@ -134,7 +134,7 @@ function imageLoaded() {
     imagesLoaded++;
     if (imagesLoaded === totalImages) {
         loadMap();
-        // console.log(walls.size)
+        console.log(walls.size)
         // console.log(foods.size)
         // console.log(ghosts.size)
         for (let ghost of ghosts.values()) {
@@ -188,7 +188,7 @@ function loadMap() {
             const y = r * tileSize + offsetY;
 
             if (tileMapChar == 'X') { //block wall
-                const wall = new Block(wallImage, x, y, tileSize, tileSize);
+                const wall = new Block(wallImage, x, y, 35, 45);
                 walls.add(wall);
             }
             else if (tileMapChar == 'b') { //blue ghost
@@ -237,7 +237,7 @@ function draw() {
     }
 
     for (let wall of walls.values()) {
-        context.drawImage(wall.image, wall.x, wall.y, wall.width, wall.height);
+        context.drawImage(wall.image, wall.x, wall.y, 35, 45);
     }
 
     context.fillStyle = "white";
@@ -445,18 +445,18 @@ function stopPacman(e) {
     }
 
     //iceblock
-if (pacman.direction === 'R' && e.code === "Space") {
+    if (pacman.direction === 'R' && e.code === "Space") {
 
-    console.log('iceblock');
+        console.log('iceblock');
 
-    const img = document.createElement("img");
-    img.src = "iceblock.png";
-    img.style.position = "absolute";
-    img.style.left = (pacman.x + 10) + "px";
-    img.style.top = pacman.y + "px";
+        const img = document.createElement("img");
+        img.src = "iceblock.png";
+        img.style.position = "absolute";
+        img.style.left = (pacman.x + 10) + "px";
+        img.style.top = pacman.y + "px";
 
-    document.body.appendChild(img);
-}
+        document.body.appendChild(img);
+    }
 }
 
 function collision(a, b) {
