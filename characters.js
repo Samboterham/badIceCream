@@ -88,7 +88,7 @@ function loadImages() {
     backgroundImage.onload = imageLoaded;
 
     wallImage = new Image();
-    wallImage.src = "./wall.png";
+    wallImage.src = "./iceblock.png";
     wallImage.onload = imageLoaded;
 
     blueGhostImage = new Image();
@@ -128,10 +128,6 @@ function loadImages() {
     chocolaterightanim = new Image();
     chocolaterightanim.src = "./chocolaterightanim.png";
     chocolaterightanim.onload = imageLoaded;
-
-    iceblockimage = new Image();
-    iceblockimage.src = "./iceblock.png";
-    iceblockimage.onload = imageLoaded;
 }
 
 function imageLoaded() {
@@ -449,11 +445,18 @@ function stopPacman(e) {
     }
 
     //iceblock
-    if (pacman.direction == 'R' && e.code == "Space") {
-        
-        console.log('iceblock');
+if (pacman.direction === 'R' && e.code === "Space") {
 
-    }
+    console.log('iceblock');
+
+    const img = document.createElement("img");
+    img.src = "iceblock.png";
+    img.style.position = "absolute";
+    img.style.left = (pacman.x + 10) + "px";
+    img.style.top = pacman.y + "px";
+
+    document.body.appendChild(img);
+}
 }
 
 function collision(a, b) {
