@@ -128,6 +128,10 @@ function loadImages() {
     chocolaterightanim = new Image();
     chocolaterightanim.src = "./chocolaterightanim.png";
     chocolaterightanim.onload = imageLoaded;
+
+    iceblockimage = new Image();
+    iceblockimage.src = "./iceblock.png";
+    iceblockimage.onload = imageLoaded;
 }
 
 function imageLoaded() {
@@ -147,6 +151,7 @@ function imageLoaded() {
         backgroundMusic = new Audio("./background.mp3");
         backgroundMusic.loop = true;
         backgroundMusic.volume = 0.5; // pas aan indien nodig
+        
 
         setInterval(() => {
             if (gameOver || !pacman) return;
@@ -167,7 +172,6 @@ function imageLoaded() {
             pacmanAnimToggle = !pacmanAnimToggle;
             pacman.image = pacmanAnimToggle ? chocolaterightanim : pacmanNormalImage;
             }
-
         }, 175);
     }
 }
@@ -360,6 +364,10 @@ function moveOneTile(direction) {
     }
 }
 
+
+
+
+
 function movePacman(e) {
     if (pressedKeys.has(e.code)) return;
     pressedKeys.add(e.code);
@@ -438,6 +446,13 @@ function stopPacman(e) {
         // Continue with the last pressed direction
         const lastDirection = pressedDirections[pressedDirections.length - 1];
         pacman.updateDirection(lastDirection);
+    }
+
+    //iceblock
+    if (pacman.direction == 'R' && e.code == "Space") {
+        
+        console.log('iceblock');
+
     }
 }
 
