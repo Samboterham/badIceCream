@@ -65,6 +65,23 @@ canvas {
     animation: flicker 0.55s infinite steps(1);
 }
 
+.backBtn {
+    position: absolute;
+    top: 74%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    font-size: 28px;
+    width: 360px;
+    height: 50px;
+    background-color: #F8F2E2;
+    font-family: pixelFont;
+    color: white;
+    -webkit-text-stroke: 2px black;
+    border-radius: 3px;
+    animation: flicker 0.55s infinite steps(1);
+}
+
 .insForm {
     position: absolute;
     top: 82%;
@@ -82,6 +99,5 @@ canvas {
     border-radius: 5px;
     border-style: solid;
     border-color: black;
-    
-}
 
+}
