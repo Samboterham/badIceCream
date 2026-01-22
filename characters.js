@@ -30,7 +30,7 @@ let wallImage;
 let width = 1505;
 let height = 694;
 
-//X = wall, O = skip, P = pac man, ' ' = food
+//X = wall, O = skip = pac man, ' ' = food
 //Ghosts: b = blue, o = orange, p = pink, r = red
 const tileMap = [
     "XXXXXXXXXXXXXXXXXXX",
@@ -446,42 +446,63 @@ function stopPacman(e) {
         pacman.updateDirection(lastDirection);
     }
 
-    //iceblock
+    //iceblock when pressing space
+
     //rechts
     if (pacman.direction === 'R' && e.code === "Space") {
+    for (let i = 1; i <= 4; i++) { 
+        const wall = new Block(wallImage, pacman.x + i * 32, pacman.y, 25, 30);
+        walls.add(wall);
+    }
+}
 
-        console.log('iceblock');
-
+    if (pacman.direction === 'R' && e.code === "KeyM") {
         const wall = new Block(wallImage, pacman.x + 32, pacman.y, 25, 30);
         walls.add(wall);
     }
 
+
         //links
     if (pacman.direction === 'L' && e.code === "Space") {
+    for (let i = 1; i <= 4; i++) { 
+        const wall = new Block(wallImage, pacman.x - i * 32, pacman.y, 25, 30);
+        walls.add(wall);
+    }
+}
 
-        console.log('iceblock');
-
+    if (pacman.direction === 'L' && e.code === "KeyM") {
         const wall = new Block(wallImage, pacman.x - 32, pacman.y, 25, 30);
         walls.add(wall);
     }
         
         //boven
     if (pacman.direction === 'U' && e.code === "Space") {
+    for (let i = 1; i <= 4; i++) { 
+        const wall = new Block(wallImage, pacman.x, pacman.y - i * 32, 25, 30);
+        walls.add(wall);
+    }
+}
 
-        console.log('iceblock');
-
+    if (pacman.direction === 'U' && e.code === "KeyM") {
         const wall = new Block(wallImage, pacman.x, pacman.y - 32, 25, 30);
         walls.add(wall);
     }
 
         //beneden
     if (pacman.direction === 'D' && e.code === "Space") {
+    for (let i = 1; i <= 4; i++) { 
+        const wall = new Block(wallImage, pacman.x, pacman.y + i * 32, 25, 30);
+        walls.add(wall);
+    }
+}
 
-        console.log('iceblock');
-
+    if (pacman.direction === 'D' && e.code === "KeyM") {
         const wall = new Block(wallImage, pacman.x, pacman.y + 32, 25, 30);
         walls.add(wall);
     }
+
+
+    //breaking iceblokc when facing direction of iceblok and pressing space
 }
 
 function collision(a, b) {
@@ -546,4 +567,4 @@ class Block {
         this.x = this.startX;
         this.y = this.startY;
     }
-};
+}
