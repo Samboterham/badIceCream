@@ -7,6 +7,7 @@ let chocolatedrightanim;
 let chocolatedownanim;
 let pacmanNormalImage;
 let pacmanAnimToggle = false;
+let pacman2AnimToggle = false;
 
 let board;
 const rowCount = 21;
@@ -60,6 +61,7 @@ const walls = new Set();
 const foods = new Set();
 const ghosts = new Set();
 let pacman;
+let pacman2;
 
 const directions = ['U', 'D', 'L', 'R']; //up down left right
 let score = 0;
@@ -67,6 +69,7 @@ let lives = 3;
 let gameOver = false;
 let pressedKeys = new Set();
 let pressedDirections = [];
+let pressedDirections2 = [];
 let keyTimers = new Map();
 let keyIntervals = new Map();
 
@@ -92,16 +95,16 @@ function loadImages() {
     wallImage.onload = imageLoaded;
 
     blueGhostImage = new Image();
-    blueGhostImage.src = "./blueGhost.png";
+    blueGhostImage.src = "./monster.png";
     blueGhostImage.onload = imageLoaded;
     orangeGhostImage = new Image();
-    orangeGhostImage.src = "./orangeGhost.png";
+    orangeGhostImage.src = "./monster.png";
     orangeGhostImage.onload = imageLoaded;
     pinkGhostImage = new Image();
-    pinkGhostImage.src = "./pinkGhost.png";
+    pinkGhostImage.src = "./monster.png";
     pinkGhostImage.onload = imageLoaded;
     redGhostImage = new Image();
-    redGhostImage.src = "./redGhost.png";
+    redGhostImage.src = "./monster.png";
     redGhostImage.onload = imageLoaded;
 
     pacmanUpImage = new Image();
@@ -144,6 +147,8 @@ function imageLoaded() {
         update();
         document.addEventListener("keydown", movePacman);
         document.addEventListener("keyup", stopPacman);
+        document.addEventListener("keydown", movePacman2);
+        document.addEventListener("keyup", stopPacman2);
         backgroundMusic = new Audio("./background.mp3");
         backgroundMusic.loop = true;
         backgroundMusic.volume = 0.5; // pas aan indien nodig
@@ -151,7 +156,7 @@ function imageLoaded() {
 
         setInterval(() => {
             if (gameOver || !pacman) return;
-            
+
             if (pacman.direction == 'U'){
             pacmanAnimToggle = !pacmanAnimToggle;
             pacman.image = pacmanAnimToggle ? chocolateupanim : pacmanNormalImage;
@@ -167,6 +172,25 @@ function imageLoaded() {
             if (pacman.direction == 'R'){
             pacmanAnimToggle = !pacmanAnimToggle;
             pacman.image = pacmanAnimToggle ? chocolaterightanim : pacmanNormalImage;
+            }
+
+            if (pacman2) {
+                if (pacman2.direction == 'U'){
+                pacman2AnimToggle = !pacman2AnimToggle;
+                pacman2.image = pacman2AnimToggle ? chocolateupanim : pacmanRightImage;
+                }
+                if (pacman2.direction == 'D'){
+                pacman2AnimToggle = !pacman2AnimToggle;
+                pacman2.image = pacman2AnimToggle ? chocolatedownanim : pacmanRightImage;
+                }
+                if (pacman2.direction == 'L'){
+                pacman2AnimToggle = !pacman2AnimToggle;
+                pacman2.image = pacman2AnimToggle ? chocolateleftanim : pacmanRightImage;
+                }
+                if (pacman2.direction == 'R'){
+                pacman2AnimToggle = !pacman2AnimToggle;
+                pacman2.image = pacman2AnimToggle ? chocolaterightanim : pacmanRightImage;
+                }
             }
         }, 175);
     }
@@ -210,6 +234,9 @@ function loadMap() {
             else if (tileMapChar == 'P') { //pacman
                 pacman = new Block(pacmanRightImage, x, y, tileSize, tileSize);
                 pacmanNormalImage = pacmanRightImage;
+            }
+            else if (tileMapChar == 'V') { //pacman2
+                pacman2 = new Block(pacmanRightImage, x, y, tileSize, tileSize);
             }
             else if (tileMapChar == ' ') { //empty is food
                 const food = new Block(null, x + tileSize / 2 - 2, y + tileSize / 2 - 2, 4, 4);
@@ -255,6 +282,23 @@ function draw() {
         context.fillText("x" + String(lives) + " " + String(score), tileSize / 2, tileSize / 2);
     }
     context.drawImage(pacman.image, pacman.x, pacman.y, pacman.width, pacman.height);
+    if (pacman2) {
+        context.drawImage(pacman2.image, pacman2.x, pacman2.y, pacman2.width, pacman2.height);
+    }
+
+    context.fillStyle = "white";
+context.font = "16px pixelFont";
+context.strokeStyle = "black";
+context.lineWidth = 2;
+
+context.strokeText("PLAYER 1", 1060, 250);
+context.fillText("PLAYER 1", 1060, 250);
+context.strokeText("PIJLTJES", 1060, 290);
+context.fillText("PIJLTJES", 1060, 290);
+context.strokeText("SPATIE", 1082, 330);
+context.fillText("SPATIE", 1082, 330);
+context.strokeText("M", 1115, 370);
+context.fillText("M", 1115, 370);
 }
 
 function move() {
@@ -268,6 +312,21 @@ function move() {
             pacman.x -= pacman.velocityX;
             pacman.y -= pacman.velocityY;
             break;
+        }
+    }
+
+    //pacman2 movement
+    if (pacman2) {
+        pacman2.x += pacman2.velocityX;
+        pacman2.y += pacman2.velocityY;
+
+        //check wall collisions for pacman2
+        for (let wall of walls.values()) {
+            if (collision(pacman2, wall)) {
+                pacman2.x -= pacman2.velocityX;
+                pacman2.y -= pacman2.velocityY;
+                break;
+            }
         }
     }
 
@@ -362,6 +421,37 @@ function moveOneTile(direction) {
     }
 }
 
+function moveOneTile2(direction) {
+    // Calculate target position one tile away for pacman2
+    let targetX = pacman2.x;
+    let targetY = pacman2.y;
+    if (direction == 'U') {
+        targetY -= tileSize;
+    } else if (direction == 'D') {
+        targetY += tileSize;
+    } else if (direction == 'L') {
+        targetX -= tileSize;
+    } else if (direction == 'R') {
+        targetX += tileSize;
+    }
+
+    // Check if target position is a wall
+    let canMove = true;
+    const targetBlock = { x: targetX, y: targetY, width: tileSize, height: tileSize };
+    for (let wall of walls.values()) {
+        if (collision(targetBlock, wall)) {
+            canMove = false;
+            break;
+        }
+    }
+
+    if (canMove) {
+        pacman2.x = targetX;
+        pacman2.y = targetY;
+        pacman2.direction = direction;
+    }
+}
+
 
 
 
@@ -385,16 +475,16 @@ function movePacman(e) {
     }
 
     let newDirection = null;
-    if (e.code == "ArrowUp" || e.code == "KeyW") {
+    if (e.code == "ArrowUp") {
         newDirection = 'U';
     }
-    else if (e.code == "ArrowDown" || e.code == "KeyS") {
+    else if (e.code == "ArrowDown") {
         newDirection = 'D';
     }
-    else if (e.code == "ArrowLeft" || e.code == "KeyA") {
+    else if (e.code == "ArrowLeft") {
         newDirection = 'L';
     }
-    else if (e.code == "ArrowRight" || e.code == "KeyD") {
+    else if (e.code == "ArrowRight") {
         newDirection = 'R';
     }
 
@@ -416,16 +506,16 @@ function stopPacman(e) {
     }
 
     let directionToRemove = null;
-    if (e.code == "ArrowUp" || e.code == "KeyW") {
+    if (e.code == "ArrowUp") {
         directionToRemove = 'U';
     }
-    else if (e.code == "ArrowDown" || e.code == "KeyS") {
+    else if (e.code == "ArrowDown") {
         directionToRemove = 'D';
     }
-    else if (e.code == "ArrowLeft" || e.code == "KeyA") {
+    else if (e.code == "ArrowLeft") {
         directionToRemove = 'L';
     }
-    else if (e.code == "ArrowRight" || e.code == "KeyD") {
+    else if (e.code == "ArrowRight") {
         directionToRemove = 'R';
     }
 
@@ -498,6 +588,135 @@ function stopPacman(e) {
 
     if (pacman.direction === 'D' && e.code === "KeyM") {
         const wall = new Block(wallImage, pacman.x, pacman.y + 32, 25, 30);
+        walls.add(wall);
+    }
+
+
+    //breaking iceblokc when facing direction of iceblok and pressing space
+}
+
+function movePacman2(e) {
+    if (pressedKeys.has(e.code)) return;
+    pressedKeys.add(e.code);
+
+    let newDirection = null;
+    if (e.code == "KeyW") {
+        newDirection = 'U';
+    }
+    else if (e.code == "KeyS") {
+        newDirection = 'D';
+    }
+    else if (e.code == "KeyA") {
+        newDirection = 'L';
+    }
+    else if (e.code == "KeyD") {
+        newDirection = 'R';
+    }
+
+    if (newDirection) {
+        // Add direction to pressedDirections2
+        if (!pressedDirections2.includes(newDirection)) {
+            pressedDirections2.push(newDirection);
+        }
+        // Move immediately on key press
+        moveOneTile2(newDirection);
+        // Start continuous tile movement if key is held
+        keyIntervals.set(e.code, setInterval(() => moveOneTile2(newDirection), 300));
+    }
+}
+
+function stopPacman2(e) {
+    pressedKeys.delete(e.code);
+
+    // Clear the interval for this key
+    if (keyIntervals.has(e.code)) {
+        clearInterval(keyIntervals.get(e.code));
+        keyIntervals.delete(e.code);
+    }
+
+    let directionToRemove = null;
+    if (e.code == "KeyW") {
+        directionToRemove = 'U';
+    }
+    else if (e.code == "KeyS") {
+        directionToRemove = 'D';
+    }
+    else if (e.code == "KeyA") {
+        directionToRemove = 'L';
+    }
+    else if (e.code == "KeyD") {
+        directionToRemove = 'R';
+    }
+
+    if (directionToRemove) {
+        const index = pressedDirections2.indexOf(directionToRemove);
+        if (index > -1) {
+            pressedDirections2.splice(index, 1);
+        }
+    }
+
+    // If no directions are pressed, stop Pacman2
+    if (pressedDirections2.length === 0) {
+        pacman2.velocityX = 0;
+        pacman2.velocityY = 0;
+    } else {
+        // Continue with the last pressed direction
+        const lastDirection = pressedDirections2[pressedDirections2.length - 1];
+        pacman2.updateDirection(lastDirection);
+    }
+
+    //iceblock when pressing space for pacman2
+
+    //rechts
+    if (pacman2.direction === 'R' && e.code === "Space") {
+    for (let i = 1; i <= 4; i++) {
+        const wall = new Block(wallImage, pacman2.x + i * 32, pacman2.y, 25, 30);
+        walls.add(wall);
+    }
+}
+
+    if (pacman2.direction === 'R' && e.code === "KeyM") {
+        const wall = new Block(wallImage, pacman2.x + 32, pacman2.y, 25, 30);
+        walls.add(wall);
+    }
+
+
+        //links
+    if (pacman2.direction === 'L' && e.code === "Space") {
+    for (let i = 1; i <= 4; i++) {
+        const wall = new Block(wallImage, pacman2.x - i * 32, pacman2.y, 25, 30);
+        walls.add(wall);
+    }
+}
+
+    if (pacman2.direction === 'L' && e.code === "KeyM") {
+        const wall = new Block(wallImage, pacman2.x - 32, pacman2.y, 25, 30);
+        walls.add(wall);
+    }
+
+        //boven
+    if (pacman2.direction === 'U' && e.code === "Space") {
+    for (let i = 1; i <= 4; i++) {
+        const wall = new Block(wallImage, pacman2.x, pacman2.y - i * 32, 25, 30);
+        walls.add(wall);
+    }
+}
+
+    if (pacman2.direction === 'U' && e.code === "KeyM") {
+        const wall = new Block(wallImage, pacman2.x, pacman2.y - 32, 25, 30);
+        walls.add(wall);
+    }
+
+        //beneden
+    if (pacman2.direction === 'D' && e.code === "Space") {
+    for (let i = 1; i <= 4; i++) {
+        const wall = new Block(wallImage, pacman2.x, pacman2.y + i * 32, 25, 30);
+        walls.add(wall);
+    }
+}
+
+    if (pacman2.direction === 'D' && e.code === "KeyM") {
+        const wall = new Block(wallImage, pacman2.x, pacman2.y + 32, 25, 30);
         walls.add(wall);
     }
 

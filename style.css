@@ -101,3 +101,46 @@ canvas {
     border-color: black;
 
 }
+
+.playersSelect {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 300px;
+    text-align: center;
+    color: white;
+    font-family: pixelFont;
+    font-size: 16px;
+    -webkit-text-stroke: 1px black;
+    z-index: 100;
+    background-color: #F8F2E2;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: black;
+
+}
+
+.players {
+    position: absolute;
+    top: 80%;
+    left: 20%;
+
+}
+
+.player1 {
+    position: absolute;
+    top: 0%;
+    left: 15%;
+    width: 150px;
+    padding: 10px;
+}
+
+.player2 {
+    position: absolute;
+    top: 0%;
+    left: 57%;
+    width: 180px;
+    padding: 10px;
+}
