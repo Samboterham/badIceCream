@@ -282,17 +282,34 @@ function draw() {
         context.fillText("x" + String(lives) + " " + String(score), tileSize / 2, tileSize / 2);
     }
     context.drawImage(pacman.image, pacman.x, pacman.y, pacman.width, pacman.height);
+<<<<<<< HEAD
     if (pacman2) {
         context.drawImage(pacman2.image, pacman2.x, pacman2.y, pacman2.width, pacman2.height);
     }
 
+=======
+>>>>>>> 0aa39b8ed9086c786f87acdbe0c81bc8982e6573
     context.fillStyle = "white";
 context.font = "16px pixelFont";
 context.strokeStyle = "black";
 context.lineWidth = 2;
+<<<<<<< HEAD
 
 context.strokeText("PLAYER 1", 1060, 250);
 context.fillText("PLAYER 1", 1060, 250);
+=======
+context.strokeText("PLAYER 1", 330, 250);
+context.fillText("PLAYER 1", 330, 250);
+context.strokeText("WASD", 355, 290);
+context.fillText("wASD", 355, 290);
+context.strokeText("SHIFT", 353, 330);
+context.fillText("SHIFT", 353, 330);
+context.strokeText("CTRL", 360, 370);
+context.fillText("CTRL", 360, 370);
+
+context.strokeText("PLAYER 2", 1060, 250);
+context.fillText("PLAYER 2", 1060, 250);
+>>>>>>> 0aa39b8ed9086c786f87acdbe0c81bc8982e6573
 context.strokeText("PIJLTJES", 1060, 290);
 context.fillText("PIJLTJES", 1060, 290);
 context.strokeText("SPATIE", 1082, 330);
