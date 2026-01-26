@@ -1,5 +1,5 @@
 Feedback:
-- Geluid zachter []
+- Geluid zachter [X]
 - Diepte sorteren []
 - Challange erin []
 - Spel langer maken []
